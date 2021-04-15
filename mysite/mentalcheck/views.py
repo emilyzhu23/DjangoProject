@@ -35,10 +35,9 @@ def index(request):
 
 def profile(request):
     # Put info on the page + allow user to edit too
-    template = loader.get_template('mentalcheck/profilepage.html')
+    profiles = Profile.objects.all()
     context = {
-        'profile': Profile,
-        'user': user,
+        'allProfiles': profiles
     }
     return render(request, 'mentalcheck/profilepage.html', context)
 
@@ -46,7 +45,11 @@ def home(request):
     return HttpResponse("HOME")
 
 def questions(request):
-    return HttpResponse("QUESTIONS")
+    questions = QuestionText.objects.all()
+    context = {
+        'allQuestions': questions
+    }
+    return render(request, 'mentalcheck/questionspage.html', context)
 
 def trends(request):
     return HttpResponse("TRENDS")
