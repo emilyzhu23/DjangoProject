@@ -1,4 +1,5 @@
-from django.shortcuts import render, loader
+from django.shortcuts import render
+from django.template import loader
 from django.http import HttpResponse
 from .models import *
 from django.contrib.auth.models import User
@@ -26,7 +27,6 @@ def index(request):
         loggedIn = True
     else:
         loggedIn = False
-    template = loader.get_template('mentalcheck/loginpage.html')
     context = {
         'user': request.user,
         'loggedIn': loggedIn,
@@ -45,6 +45,18 @@ def home(request):
     return HttpResponse("HOME")
 
 def questions(request):
+    if request.method == "POST": # FIX THIS
+        # This tests if the form is the log *in* form
+        if 'fulltextarea' in request.POST.keys():
+            # IF so, try to authentircate
+            textAns = request.POST['fulltextarea']
+            if textAns is not None:
+                # IF success, then use the login function so the session persists.
+                print(textAns)
+            else:
+                pass
+                # Message for failed login.
+
     questions = QuestionText.objects.all()
     context = {
         'allQuestions': questions
