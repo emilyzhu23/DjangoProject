@@ -13,6 +13,7 @@ class Profile(models.Model):
     emergencyContact = models.CharField(max_length = 10, default = "")
 
 class QuestionText(models.Model):
+    questionText = models.TextField(default="", blank=True)
     date = models.DateField()
     answer = models.CharField(max_length=60)
     userAnswered = models.ForeignKey(User, on_delete = models.CASCADE, default = "")

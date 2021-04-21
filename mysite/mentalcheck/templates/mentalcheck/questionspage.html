@@ -13,13 +13,16 @@
   </head>
 
   <body>
-    <div class = "container">
-      <form method = "POST">
-        {% csrf_token %}
-        <textarea name="fulltextarea" id = "fulltextarea" cols=40 rows=10></textarea>
-        <br />
-        <input type="submit" value="submit!"/>
-      </form>
-    </div>
+    <h3>{{user.username}}</h3>
+    <form style="padding-bottom:1em;" method="POST">
+      {% csrf_token %}
+      {% for question in allQuestions %}
+          {% csrf_token %}
+          {{question.firstName}}
+          <textarea name="fulltextarea" id = "fulltextarea" cols=40 rows=10></textarea>
+          <br />
+      {% endfor %}
+      <input type="submit" value="submit!"/>
+    </form>
   </body>
 </html>
