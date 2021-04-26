@@ -18,8 +18,8 @@
       {% csrf_token %}
       {% for question in allQuestions %}
           {% csrf_token %}
-          {{question.firstName}}
-          <textarea name="fulltextarea" id = "fulltextarea" cols=40 rows=10></textarea>
+          {{question.questionText}}
+          <textarea name = "{{ question.idNum }}" id = "{{ question.idNum }}" cols=10 rows=10></textarea>
           <br />
       {% endfor %}
       <input type="submit" value="submit!"/>

@@ -43,6 +43,23 @@ class profile(View):
             'allProfiles': profiles
         }
         return render(request, 'mentalcheck/profilepage.html', context)
+    def post(self, request):
+        profiles = Profile.objects.all()
+        profileAspects = ["inputUsername", "inputPassword", "inputFirstName", "inputLastName", "inputAge", "inputPassword"]
+        for proElement in profileAspects:
+            if proElement in request.POST.keys():
+                # IF so, try to authentircate
+                textAns = request.POST[proElement]
+                if textAns is not None:
+                    # IF success, then use the login function so the session persists.
+                    print(textAns)
+                else:
+                    pass
+                    # Message for failed login.
+        context = {
+            'allProfiles': profiles
+        }
+        return render(request, 'mentalcheck/profilepage.html', context)
 
 class home(View):
     def get(self, request):
@@ -50,19 +67,25 @@ class home(View):
 
 class questions(View):
     def get(self, request):
-        if request.method == "POST": # FIX THIS
-            # This tests if the form is the log *in* form
-            if 'fulltextarea' in request.POST.keys():
+        questions = QuestionText.objects.all()
+        context = {
+            'allQuestions': questions
+        }
+        return render(request, 'mentalcheck/questionspage.html', context)
+
+    def post(self, request):
+        questions = QuestionText.objects.all()
+        # This tests if the form is the log *in* form
+        for question in questions:
+            if str(question.idNum) in request.POST.keys():
                 # IF so, try to authentircate
-                textAns = request.POST['fulltextarea']
+                textAns = request.POST[str(question.idNum)]
                 if textAns is not None:
                     # IF success, then use the login function so the session persists.
                     print(textAns)
                 else:
                     pass
                     # Message for failed login.
-
-        questions = QuestionText.objects.all()
         context = {
             'allQuestions': questions
         }

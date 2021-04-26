@@ -15,8 +15,9 @@ class Profile(models.Model):
 class QuestionText(models.Model):
     questionText = models.TextField(default="", blank=True)
     date = models.DateField()
-    answer = models.CharField(max_length=60)
-    userAnswered = models.ForeignKey(User, on_delete = models.CASCADE, default = "")
+    answer = models.TextField(default="", blank=True)
+    idNum = models.IntegerField(default=1)
+    userAnswered = models.ForeignKey(User, on_delete = models.CASCADE, default=0)
 
 class Following(models.Model):
     follower = models.ForeignKey(
