@@ -43,16 +43,28 @@ class profile(View):
             'allProfiles': profiles
         }
         return render(request, 'mentalcheck/profilepage.html', context)
+
     def post(self, request):
         profiles = Profile.objects.all()
-        profileAspects = ["inputUsername", "inputPassword", "inputFirstName", "inputLastName", "inputAge", "inputPassword"]
-        for proElement in profileAspects:
-            if proElement in request.POST.keys():
+        currUser = request.user
+        currProfile = Profile.objects.get(pk = currUser)
+
+        profileAspects = {
+            "inputUsername": currUser.username,
+            "inputPassword": currUser.password,
+            "inputFirstName": currUser.first_name,
+            "inputLastName": currUser.last_name,
+            "inputAge": currProfile.age,
+            "inputMed": currProfile.medicalHistory
+        }
+        for dataName in profileAspects.keys():
+            if dataName in request.POST.keys():
                 # IF so, try to authentircate
-                textAns = request.POST[proElement]
+                textAns = request.POST[dataName]
                 if textAns is not None:
                     # IF success, then use the login function so the session persists.
-                    print(textAns)
+                    profileAspects[dataName] = textAns
+                    currUser.save()
                 else:
                     pass
                     # Message for failed login.
@@ -60,10 +72,6 @@ class profile(View):
             'allProfiles': profiles
         }
         return render(request, 'mentalcheck/profilepage.html', context)
-
-class home(View):
-    def get(self, request):
-        return HttpResponse("HOME")
 
 class questions(View):
     def get(self, request):
@@ -82,17 +90,26 @@ class questions(View):
                 textAns = request.POST[str(question.idNum)]
                 if textAns is not None:
                     # IF success, then use the login function so the session persists.
-                    print(textAns)
+                    question.answer = textAns
+                    question.userAnswered = request.user
+                    question.save()
                 else:
                     pass
-                    # Message for failed login.
+                    # Message for fail
+
         context = {
             'allQuestions': questions
         }
         return render(request, 'mentalcheck/questionspage.html', context)
 
-class trends(View):
+class pastAnswer(View):
     def get(self, request):
-        return HttpResponse("TRENDS")
+        pastAnswers = QuestionText.objects.filter(userAnswered = request.user)
+
+        context = {
+            'allPastQs': pastAnswers
+        }
+
+        return render(request, 'mentalcheck/pastquestionspage.html', context) # How to get just one user's past answers - not everyone's
 
 # Create your views here.
