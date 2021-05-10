@@ -1,29 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import loader
 from django.http import HttpResponse
 from .models import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
+from django.utils import timezone
 
 class index(View):
     def get(self, request):
-        if request.POST:
-            # This tests if the form is the log *in* form
-            if 'inputUsername' in request.POST.keys():
-                # IF so, try to authentircate
-                user = authenticate(username=request.POST['inputUsername'],
-                    password=request.POST['inputPassword'])
-                if user is not None:
-                    # IF success, then use the login function so the session persists.
-                    login(request, user)
-                else:
-                    pass
-                    # Message for failed login.
-            # This tests if the form is the log *out* form
-            elif 'logout' in request.POST.keys():
-                # If so, don't need to check anything else, just kill the session.
-                logout(request)
         # After we check the forms, set a flag for use in the template.
         if request.user.is_authenticated:
             loggedIn = True
@@ -34,6 +19,24 @@ class index(View):
             'loggedIn': loggedIn,
         }
         return render(request, 'mentalcheck/loginpage.html', context)
+    def post(self, request):
+        if request.POST:
+            # This tests if the form is the log *in* form
+            if 'inputUsername' in request.POST.keys():
+                # IF so, try to authentircate
+                user = authenticate(username=request.POST['inputUsername'],
+                    password=request.POST['inputPassword'])
+                if user is not None:
+                    # IF success, then use the login function so the session persists.
+                    login(request, user)
+                    #return redirect('/mentalcheck/questions/')
+                else:
+                    pass
+                    # Message for failed login.
+            # This tests if the form is the log *out* form
+            elif 'logout' in request.POST.keys():
+                # If so, don't need to check anything else, just kill the session.
+                logout(request)
 
 class profile(View):
     def get(self, request):
@@ -92,6 +95,7 @@ class questions(View):
                     # IF success, then use the login function so the session persists.
                     question.answer = textAns
                     question.userAnswered = request.user
+                    question.date_answered = timezone.now
                     question.save()
                 else:
                     pass

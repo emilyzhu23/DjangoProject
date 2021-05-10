@@ -18,7 +18,8 @@
       {% csrf_token %}
       {% for questObj in allPastQs %}
         <div>
-          {{questObj.questionText}} {{questObj.}}
+          {{questObj.pub_date}}
+          {{questObj.questionText}} {{questObj.answer}}
         </div>
       {% endfor %}
     </form>

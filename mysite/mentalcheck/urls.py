@@ -10,5 +10,5 @@ urlpatterns = [
 
     path('questions/', views.questions.as_view(), name='questions'),
 
-    path('trends/', views.pastAnswer.as_view(), name='trends'),
+    path('pastAnswers/', views.pastAnswer.as_view(), name='trends'),
 ]

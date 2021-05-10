@@ -1,12 +1,14 @@
+import datetime
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 
 class Profile(models.Model):
     User = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         primary_key = True,
+        default = ""
     )
     age = models.IntegerField()
     medicalHistory = models.TextField(default="", blank=True)
@@ -14,7 +16,7 @@ class Profile(models.Model):
 
 class QuestionText(models.Model):
     questionText = models.TextField(default="", blank=True)
-    date = models.DateField()
+    date_answered = models.DateField(default = timezone.now)
     answer = models.TextField(default="", blank=True)
     idNum = models.IntegerField(default=1)
     userAnswered = models.ForeignKey(User, on_delete = models.CASCADE, default=0)
