@@ -11,7 +11,7 @@ class index(View):
     def get(self, request):
         # After we check the forms, set a flag for use in the template.
         if request.user.is_authenticated:
-            loggedIn = True
+            loggedIn = False
         else:
             loggedIn = False
         context = {
@@ -29,7 +29,8 @@ class index(View):
                 if user is not None:
                     # IF success, then use the login function so the session persists.
                     login(request, user)
-                    #return redirect('/mentalcheck/questions/')
+                    response = redirect('/mentalcheck/questions/')
+                    return response
                 else:
                     pass
                     # Message for failed login.
