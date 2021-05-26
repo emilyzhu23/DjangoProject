@@ -34,6 +34,12 @@
           <input type="password" class="form-control" name="inputPassword" id="inputPassword" />
         </div>
         <button type="submit" class="btn btn-danger">Login</button>
+
+        <form style="padding-bottom:1em;" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="newUser" value="newUser"></input>
+          <button type="submit" class="btn btn-danger">New Account?</button>
+        </form>
       </form>
       {% endif %}
     </div>

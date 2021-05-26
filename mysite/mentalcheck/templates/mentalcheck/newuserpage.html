@@ -16,10 +16,19 @@
     <h3>{{user.username}}</h3>
     <form style="padding-bottom:1em;" method="POST">
       {% csrf_token %}
-      {{question.questionText}}
-      <textarea name = "{{ question.idNum }}" id = "{{ question.idNum }}" cols=10 rows=10></textarea>
-      <br />
-      <input type="submit" value="submit!"/>
+      <div class="form-group">
+        <label for="newUsername">Username</label>
+        <input type="text" class="form-control" name="newUsername" id="newUsername" placeholder = />
+      </div>
+      <div class="form-group">
+        <label for="newPassword">Password</label>
+        <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder = />
+      </div>
+      <div class="form-group">
+        <label for="newFirstName">First Name</label>
+        <input type="text" class="form-control" name="newFirstName" id="newFirstName" placeholder = />
+      </div>
+      <button type="submit" class="btn btn-danger">Create</button>
     </form>
   </body>
 </html>

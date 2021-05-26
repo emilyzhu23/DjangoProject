@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from django.http import HttpResponse
 from .models import *
@@ -11,7 +11,7 @@ class index(View):
     def get(self, request):
         # After we check the forms, set a flag for use in the template.
         if request.user.is_authenticated:
-            loggedIn = False
+            loggedIn = True
         else:
             loggedIn = False
         context = {
@@ -38,6 +38,9 @@ class index(View):
             elif 'logout' in request.POST.keys():
                 # If so, don't need to check anything else, just kill the session.
                 logout(request)
+            elif 'newUser' in request.POST.keys():
+                response = redirect('/mentalcheck/newuser/')
+                return response
 
 class profile(View):
     def get(self, request):
@@ -78,19 +81,20 @@ class profile(View):
         return render(request, 'mentalcheck/profilepage.html', context)
 
 class questions(View):
+    # First time loading
     def get(self, request):
-        questions = QuestionText.objects.all()
         context = {
-            'allQuestions': questions
+            'allQuestions': QuestionText.objects.all()
         }
         return render(request, 'mentalcheck/questionspage.html', context)
 
+    # each subsequent question
     def post(self, request):
         questions = QuestionText.objects.all()
         # This tests if the form is the log *in* form
         for question in questions:
             if str(question.idNum) in request.POST.keys():
-                # IF so, try to authentircate
+                # IF so, try to authenticate
                 textAns = request.POST[str(question.idNum)]
                 if textAns is not None:
                     # IF success, then use the login function so the session persists.
@@ -100,21 +104,71 @@ class questions(View):
                     question.save()
                 else:
                     pass
-                    # Message for fail
+            # create page with one question at a time
+            context = {
+                'currQ': question
+            }
+            return render(request, 'mentalcheck/questionspage.html', context)
+            # reload page - how to get data from one session to the next???
+            response = redirect('/mentalcheck/questions/')
+            return response
 
-        context = {
-            'allQuestions': questions
-        }
-        return render(request, 'mentalcheck/questionspage.html', context)
+class newUser(View):
+    allUsernames = []
+    def get(self, request):
+        return render(request, 'mentalcheck/newuserpage.html')
+
+    def post(self, request):
+        allUsers = User.objects.all()
+        if "newUsername" in request.POST.keys() and "newPassword" in request.POST.keys() and "newFirstName" in request.POST.keys():
+            newUserName = request.POST["newUsername"]
+            newPassword = request.POST["newPassword"]
+            newFirstName = request.POST["newFirstName"]
+            if User.objects.filter(username = newUserName).count() == 0:
+                newUser = User.objects.create_user(username = newUserName, password = newPassword, first_name = newFirstName)
+            else:
+                return HttpResponse("NOOOOOOO")
+        else:
+            pass
+
+        response = redirect('/mentalcheck/questions/')
+        return response
 
 class pastAnswer(View):
     def get(self, request):
-        pastAnswers = QuestionText.objects.filter(userAnswered = request.user)
-
+        pastAnswers = QuestionText.objects.filter(pk = request.user)
         context = {
             'allPastQs': pastAnswers
         }
 
-        return render(request, 'mentalcheck/pastquestionspage.html', context) # How to get just one user's past answers - not everyone's
+        return render(request, 'mentalcheck/pastquestionspage.html', context)
 
-# Create your views here.
+class following(View):
+    def get(self, request):
+        allFollowing = request.user.followed.all()
+        allFollowers = request.user.follower.all()
+        context = {
+            'allFollowing': allFollowing,
+            'allFollowers': allFollowers
+        }
+        return render(request, 'mentalcheck/followingpage.html', context)
+
+    def post(self, request):
+        if 'searchedUser' in request.POST.keys():
+            query = self.request.POST.get('searchedUser')
+            if query != None:
+                searchUser = User.objects.get(username__icontains=query)
+                Following.objects.create(follower = request.user, following = searchUser)
+            else:
+                return HttpResponse("NOOOOOOO")
+                # how to create new following models ig?
+        else:
+            return HttpResponse("user dne")
+            
+        allFollowing = request.user.followed.all()
+        allFollowers = request.user.follower.all()
+        context = {
+            'allFollowing': allFollowing,
+            'allFollowers': allFollowers
+        }
+        return render(request, 'mentalcheck/followingpage.html', context)

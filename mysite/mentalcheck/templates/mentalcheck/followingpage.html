@@ -11,15 +11,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
-
+  <!--Search users, follow button, need other page to see other people-->
   <body>
-    <h3>{{user.username}}</h3>
-    <form style="padding-bottom:1em;" method="POST">
-      {% csrf_token %}
-      {{question.questionText}}
-      <textarea name = "{{ question.idNum }}" id = "{{ question.idNum }}" cols=10 rows=10></textarea>
-      <br />
-      <input type="submit" value="submit!"/>
-    </form>
+    <div class = "container">
+      <form style="padding-bottom:1em;" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <input name="searchedUser" type="text" placeholder="Search..." />
+        </div>
+        <button type="submit" class="btn btn-info">Search</button>
+      </form>
+    </div>
+
+    <div class = "container">
+
+    </div>
   </body>
 </html>
