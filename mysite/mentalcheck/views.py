@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .models import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from django.utils import timezone
+from django.core.serializers import json
+
 
 class index(View):
     def get(self, request):
@@ -92,26 +94,25 @@ class questions(View):
     def post(self, request):
         questions = QuestionText.objects.all()
         # This tests if the form is the log *in* form
-        for question in questions:
-            if str(question.idNum) in request.POST.keys():
-                # IF so, try to authenticate
-                textAns = request.POST[str(question.idNum)]
-                if textAns is not None:
-                    # IF success, then use the login function so the session persists.
-                    question.answer = textAns
-                    question.userAnswered = request.user
-                    question.date_answered = timezone.now
-                    question.save()
-                else:
-                    pass
-            # create page with one question at a time
-            context = {
-                'currQ': question
-            }
-            return render(request, 'mentalcheck/questionspage.html', context)
-            # reload page - how to get data from one session to the next???
-            response = redirect('/mentalcheck/questions/')
-            return response
+        questions = QuestionText.objects.all()
+        # This tests if the form is the log *in* form
+        if 'prevId' in request.POST.keys():
+            # IF so, try to authenticate
+            previousQID = request.POST['prevId']
+            prevAns = request.POST[str(previousQID)]
+            question = QuestionText.objects.get(idNum = previousQID)
+            question.answer = prevAns
+            question.userAnswered = request.user
+            question.date_answered = timezone.now
+            question.save()
+        else:
+            return HttpResponse("NOOOOOOO")
+
+        context = {
+            'currQ': QuestionText.objects.get(idNum = (previousQID + 1))
+        }
+        return render(request, 'mentalcheck/questionspage.html', context)
+        # reload page - how to get data from one session to the next???
 
 class newUser(View):
     allUsernames = []
@@ -126,6 +127,7 @@ class newUser(View):
             newFirstName = request.POST["newFirstName"]
             if User.objects.filter(username = newUserName).count() == 0:
                 newUser = User.objects.create_user(username = newUserName, password = newPassword, first_name = newFirstName)
+                newProfile = Profile.objects.create(User = newUser)
             else:
                 return HttpResponse("NOOOOOOO")
         else:
@@ -145,8 +147,16 @@ class pastAnswer(View):
 
 class following(View):
     def get(self, request):
-        allFollowing = request.user.followed.all()
-        allFollowers = request.user.follower.all()
+        currUser = request.user
+        allFollowingF = Following.objects.filter(follower = currUser)
+        allFollowersF = Following.objects.filter(followed = currUser)
+        allFollowing = []
+        allFollowers = []
+        for f in allFollowingF:
+            allFollowing.append(f.followed)
+        for f in allFollowersF:
+            allFollowers.append(f.follower)
+
         context = {
             'allFollowing': allFollowing,
             'allFollowers': allFollowers
@@ -154,21 +164,28 @@ class following(View):
         return render(request, 'mentalcheck/followingpage.html', context)
 
     def post(self, request):
-        if 'searchedUser' in request.POST.keys():
-            query = self.request.POST.get('searchedUser')
-            if query != None:
-                searchUser = User.objects.get(username__icontains=query)
-                Following.objects.create(follower = request.user, following = searchUser)
-            else:
-                return HttpResponse("NOOOOOOO")
-                # how to create new following models ig?
+        currUser = request.user
+        allFollowingF = Following.objects.filter(follower = currUser)
+        allFollowersF = Following.objects.filter(followed = currUser)
+        allFollowing = []
+        allFollowers = []
+        for f in allFollowingF:
+            allFollowing.append(f.followed)
+        for f in allFollowersF:
+            allFollowers.append(f.follower)
+        allUsers = User.objects.all()
+        json_serializer = json.Serializer()
+        allUsersJson = json_serializer.serialize(allUsers)
+
+        if 'followUser' in request.POST.keys():
+            Following.objects.create(follower = request.user, followed = )
+            print("FRICK")
         else:
-            return HttpResponse("user dne")
-            
-        allFollowing = request.user.followed.all()
-        allFollowers = request.user.follower.all()
+            return HttpResponse("NOOOOOOO")
+
         context = {
             'allFollowing': allFollowing,
-            'allFollowers': allFollowers
+            'allFollowers': allFollowers,
+            'allUsers': allUsersJson
         }
         return render(request, 'mentalcheck/followingpage.html', context)

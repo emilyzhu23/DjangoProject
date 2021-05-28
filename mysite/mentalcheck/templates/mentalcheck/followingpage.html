@@ -13,18 +13,52 @@
   </head>
   <!--Search users, follow button, need other page to see other people-->
   <body>
+    <script>
+    /* finish this */
+      function getInputValue()
+      {
+        var inputVal = document.getElementById("myInput").value;
+        var allUsers = {{allUsers|safe}};
+        console.log(allUsers);
+        for (user in allUsers)
+        {
+          userObj = allUsers[user];
+          console.log(userObj)
+          if (userObj["fields"]["username"] == inputVal)
+          {
+            document.getElementById("search").innerHTML += inputVal
+          }
+        }
+      }
+    </script>
     <div class = "container">
+      <div class="form-group">
+        <input name="searchedUser" type="text" placeholder="Search..." id = "myInput"/>
+      </div>
+      <button type="button" onclick = "getInputValue();" class="btn btn-info">Search</button>
+    </div>
+
+    <div class = "container">
+      <h3>results: </h3>
       <form style="padding-bottom:1em;" method="POST">
         {% csrf_token %}
-        <div class="form-group">
-          <input name="searchedUser" type="text" placeholder="Search..." />
+        <div id = "search">
+          <button type = "submit" name = "followUser"> Follow </button>
         </div>
-        <button type="submit" class="btn btn-info">Search</button>
       </form>
     </div>
 
     <div class = "container">
-
+      <h1> Following </h1>
+      {% for fObj in allFollowing %}
+          {{fObj.username}}
+      {% endfor %}
+    </div>
+    <div class = "container">
+      <h1> Followers </h1>
+      {% for fObj in allFollowers %}
+          {{fObj.username}}
+      {% endfor %}
     </div>
   </body>
 </html>

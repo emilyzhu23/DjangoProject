@@ -10,7 +10,7 @@ class Profile(models.Model):
         primary_key = True,
         default = ""
     )
-    age = models.IntegerField()
+    age = models.IntegerField(default = 0)
     medicalHistory = models.TextField(default="", blank=True)
     emergencyContact = models.CharField(max_length = 10, default = "")
 
