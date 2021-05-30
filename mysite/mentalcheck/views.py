@@ -86,33 +86,37 @@ class questions(View):
     # First time loading
     def get(self, request):
         context = {
-            'allQuestions': QuestionText.objects.all()
+            'allQuestions': QuestionText.objects.all(),
+            'currQ': QuestionText.objects.get(idNum = 1)
+            # test to see if adding currq as the first will work better
         }
         return render(request, 'mentalcheck/questionspage.html', context)
 
     # each subsequent question
     def post(self, request):
-        questions = QuestionText.objects.all()
         # This tests if the form is the log *in* form
-        questions = QuestionText.objects.all()
-        # This tests if the form is the log *in* form
-        if 'prevId' in request.POST.keys():
+        maxId = QuestionText.objects.all().count()
+        if 'qFinish' in request.POST.keys():
+            response = redirect('/mentalcheck/pastquestions/')
+            return response
+        elif 'prevId' in request.POST.keys():
             # IF so, try to authenticate
             previousQID = request.POST['prevId']
-            prevAns = request.POST[str(previousQID)]
-            question = QuestionText.objects.get(idNum = previousQID)
+            prevAns = request.POST[previousQID]
+            question = QuestionText.objects.filter(idNum = int(previousQID)).first()
             question.answer = prevAns
             question.userAnswered = request.user
-            question.date_answered = timezone.now
+            question.date_answered = timezone.now()
             question.save()
+
         else:
             return HttpResponse("NOOOOOOO")
 
         context = {
-            'currQ': QuestionText.objects.get(idNum = (previousQID + 1))
+            'currQ': QuestionText.objects.get(idNum = (1 + int(previousQID))),
+            'maxId': maxId
         }
         return render(request, 'mentalcheck/questionspage.html', context)
-        # reload page - how to get data from one session to the next???
 
 class newUser(View):
     allUsernames = []
@@ -178,7 +182,7 @@ class following(View):
         allUsersJson = json_serializer.serialize(allUsers)
 
         if 'followUser' in request.POST.keys():
-            Following.objects.create(follower = request.user, followed = )
+            #Following.objects.create(follower = request.user, followed = )
             print("FRICK")
         else:
             return HttpResponse("NOOOOOOO")

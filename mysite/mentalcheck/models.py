@@ -18,7 +18,7 @@ class QuestionText(models.Model):
     questionText = models.TextField(default="", blank=True)
     date_answered = models.DateField(default = timezone.now)
     answer = models.TextField(default="", blank=True)
-    idNum = models.IntegerField(default=1)
+    idNum = models.IntegerField(default=0)
     userAnswered = models.ForeignKey(User, on_delete = models.CASCADE, default=0)
 
 class Following(models.Model):

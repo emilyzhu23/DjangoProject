@@ -19,7 +19,11 @@
       {{currQ.questionText}}
       <textarea name = "{{ currQ.idNum }}" id = "{{ currQ.idNum }}"></textarea>
       <br />
-      <input type = "hidden" name = "prevId" value = "{{ currQ.idNum }}" />
+      {% if maxId == currQ.idNum %}
+        <input type = "hidden" name = "qFinish" value = "" />
+      {% else %}
+        <input type = "hidden" name = "prevId" value = "{{ currQ.idNum }}" />
+      {% endif %}
       <input type="submit" value="submit!"/>
     </form>
 
