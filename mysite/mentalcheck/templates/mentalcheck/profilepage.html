@@ -14,18 +14,6 @@
 
   <body>
     <div class = "container">
-      <h3>{{user.username}}</h3>
-      <form style="padding-bottom:1em;" method="POST">
-        {% csrf_token %}
-        {% for profile in allProfiles %}
-          <div>
-            {{profile.firstName}} {{profile.lastName}}
-            {{profile.age}} {{profile.medicalHistory}}
-            {{profile.emergencyContact}}
-          </div>
-        {% endfor %}
-      </form>
-
       <h3>Edit Profile</h3>
       <form style="padding-bottom:1em;" method="POST">
         {% csrf_token %}

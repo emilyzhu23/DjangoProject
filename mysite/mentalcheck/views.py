@@ -5,9 +5,39 @@ from .models import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
-from django.utils import timezone
+from django.utils.timezone import datetime
 from django.core.serializers import json
 
+
+class home(View):
+    def get(self, request):
+        currUser = request.user
+        dateAns = QuestionText.objects.filter(userAnswered = currUser).last().date_answered
+        ans_for_today = QuestionText.objects.filter(date_answered = datetime.today()).count()
+        qAnswered = False
+        if ans_for_today != 0:
+            qAnswered = True
+
+        context = {
+            "currUser": currUser,
+            "ifAnsToday": qAnswered
+        }
+
+        return render(request, 'mentalcheck/homepage.html', context)
+    def post(self, request):
+        if 'profile' in request.POST.keys():
+            response = redirect('/mentalcheck/profile/')
+        elif 'questions' in request.POST.keys():
+            response = redirect('/mentalcheck/questions/')
+        elif 'past' in request.POST.keys():
+            response = redirect('/mentalcheck/pastAnswers/')
+        elif 'following' in request.POST.keys():
+            response = redirect('/mentalcheck/following/')
+        elif 'logout' in request.POST.keys():
+            logout(request)
+            return HttpResponse("logged out")
+
+        return response
 
 class index(View):
     def get(self, request):
@@ -36,10 +66,6 @@ class index(View):
                 else:
                     pass
                     # Message for failed login.
-            # This tests if the form is the log *out* form
-            elif 'logout' in request.POST.keys():
-                # If so, don't need to check anything else, just kill the session.
-                logout(request)
             elif 'newUser' in request.POST.keys():
                 response = redirect('/mentalcheck/newuser/')
                 return response
@@ -56,7 +82,7 @@ class profile(View):
     def post(self, request):
         profiles = Profile.objects.all()
         currUser = request.user
-        currProfile = Profile.objects.get(pk = currUser)
+        currProfile = Profile.objects.get(User = currUser)
 
         profileAspects = {
             "inputUsername": currUser.username,
@@ -142,7 +168,7 @@ class newUser(View):
 
 class pastAnswer(View):
     def get(self, request):
-        pastAnswers = QuestionText.objects.filter(pk = request.user)
+        pastAnswers = QuestionText.objects.filter(userAnswered = request.user)
         context = {
             'allPastQs': pastAnswers
         }
@@ -160,10 +186,14 @@ class following(View):
             allFollowing.append(f.followed)
         for f in allFollowersF:
             allFollowers.append(f.follower)
+        allUsers = User.objects.all()
+        json_serializer = json.Serializer()
+        allUsersJson = json_serializer.serialize(allUsers)
 
         context = {
             'allFollowing': allFollowing,
-            'allFollowers': allFollowers
+            'allFollowers': allFollowers,
+            'allUsers': allUsersJson
         }
         return render(request, 'mentalcheck/followingpage.html', context)
 
@@ -182,8 +212,7 @@ class following(View):
         allUsersJson = json_serializer.serialize(allUsers)
 
         if 'followUser' in request.POST.keys():
-            #Following.objects.create(follower = request.user, followed = )
-            print("FRICK")
+            Following.objects.create(follower = request.user, followed = User.objects.get(username = request.POST['userInput']))
         else:
             return HttpResponse("NOOOOOOO")
 
