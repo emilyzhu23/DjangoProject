@@ -20,14 +20,20 @@
         var inputVal = document.getElementById("myInput").value;
         var allUsers = {{allUsers|safe}};
         console.log(allUsers);
+        found = false
         for (user in allUsers)
         {
           userObj = allUsers[user];
           console.log(userObj)
           if (userObj["fields"]["username"] == inputVal)
           {
+            found = true
             document.getElementById("search").innerHTML += inputVal
           }
+        }
+        if (found == false)
+        {
+          document.getElementById("search").innerHTML = "User not found. Please try again :)"
         }
       }
     </script>
@@ -47,15 +53,10 @@
     </div>
 
     <div class = "container">
-      <h1> Following </h1>
-      {% for fObj in allFollowing %}
-          {{fObj.username}}
-      {% endfor %}
-    </div>
-    <div class = "container">
-      <h1> Followers </h1>
-      {% for fObj in allFollowers %}
-          {{fObj.username}}
+      <h1> Friends </h1>
+      {% for key, value in allFollowStat %}
+          {{key}}
+          {{value}}
       {% endfor %}
     </div>
   </body>
