@@ -16,10 +16,13 @@ class Profile(models.Model):
 
 class QuestionText(models.Model):
     questionText = models.TextField(default="", blank=True)
+    idNum = models.IntegerField(default=0)
+
+class Answer(models.Model):
     date_answered = models.DateField(default = timezone.now)
     answer = models.TextField(default="", blank=True)
-    idNum = models.IntegerField(default=0)
     userAnswered = models.ForeignKey(User, on_delete = models.CASCADE, default=0)
+    questionText = models.ForeignKey(QuestionText, on_delete = models.CASCADE, default="")
 
 class Following(models.Model):
     follower = models.ForeignKey(
@@ -36,6 +39,6 @@ class Following(models.Model):
         related_name = 'followed'
     )
 
-    questionsShared = models.BooleanField(default=False)
+    followedBack = models.BooleanField(default = False)
 
 # https://docs.djangoproject.com/en/3.1/intro/tutorial02/

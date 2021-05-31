@@ -129,9 +129,8 @@ class questions(View):
             # IF so, try to authenticate
             previousQID = request.POST['prevId']
             prevAns = request.POST[previousQID]
-            question = QuestionText.objects.filter(idNum = int(previousQID)).first()
+            question = QuestionText.objects.filter(idNum = int(previousQID), userAnswered = request.user).first()
             question.answer = prevAns
-            question.userAnswered = request.user
             question.date_answered = timezone.now()
             question.save()
 
@@ -162,7 +161,7 @@ class newUser(View):
                 return HttpResponse("NOOOOOOO")
         else:
             pass
-
+            # create question objects
         response = redirect('/mentalcheck/questions/')
         return response
 
@@ -212,13 +211,26 @@ class following(View):
         allUsersJson = json_serializer.serialize(allUsers)
 
         if 'followUser' in request.POST.keys():
-            Following.objects.create(follower = request.user, followed = User.objects.get(username = request.POST['userInput']))
+            followedUser = User.objects.get(username = request.POST['userInput'])
+            reverseFollowObj = Following.object.filter(follower = followedUser, followed = request.user)
+            newFollowObj = Following.objects.create(follower = request.user, followed = followedUser)
+            # check if followed back
+            if (reverseFollowObj.exists()):
+                newFollowObj.followedBack = True
+                newFollowObj.save()
+                reverseFollowObj.delete()
         else:
             return HttpResponse("NOOOOOOO")
 
+        allFollowObj = Following.object.filter(follower = request.user, followedBack = True)
+        allFollowAns = {}
+        for f in allFollowObj:
+            userName = f.followed.username
+            qAns = QuestionText.objects.filter(userAnswered = f.followed, idNum = QuestionText.objects.all().count()).answer
+            allFollowAns[userName] = qAns
+
         context = {
-            'allFollowing': allFollowing,
-            'allFollowers': allFollowers,
-            'allUsers': allUsersJson
+            'allUsers': allUsersJson,
+            'allFollowStat': allFollowAns
         }
         return render(request, 'mentalcheck/followingpage.html', context)
