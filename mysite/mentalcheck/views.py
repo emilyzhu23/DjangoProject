@@ -35,7 +35,7 @@ class home(View):
             response = redirect('/mentalcheck/following/')
         elif 'logout' in request.POST.keys():
             logout(request)
-            return HttpResponse("logged out")
+            return render(request, 'mentalcheck/loggedout.html')
 
         return response
 
@@ -130,8 +130,6 @@ class questions(View):
             previousQID = request.POST['prevId']
             prevAns = request.POST[previousQID]
             answer = Answer.objects.create(userAnswered = request.user, date_answered = timezone.now(), answer = prevAns, questionTextObj = QuestionText.objects.get(id = previousQID))
-        else:
-            return HttpResponse("NOOOOOOO")
 
         context = {
             'currQ': QuestionText.objects.get(idNum = (1 + int(previousQID))),
@@ -154,7 +152,7 @@ class newUser(View):
                 newUser = User.objects.create_user(username = newUserName, password = newPassword, first_name = newFirstName)
                 newProfile = Profile.objects.create(User = newUser)
             else:
-                return HttpResponse("NOOOOOOO")
+                return render(request, 'mentalcheck/newusererrorpage.html')
         else:
             pass
             # create question objects
@@ -216,7 +214,7 @@ class following(View):
                 newFollowObj.save()
                 reverseFollowObj.delete()
         else:
-            return HttpResponse("NOOOOOOO")
+            return render(request, 'mentalcheck/followingerrorpage.html')
 
         allFollowObj = Following.object.filter(follower = request.user, followedBack = True)
         allFollowAns = {}
