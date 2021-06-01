@@ -22,7 +22,7 @@ class Answer(models.Model):
     date_answered = models.DateField(default = timezone.now)
     answer = models.TextField(default="", blank=True)
     userAnswered = models.ForeignKey(User, on_delete = models.CASCADE, default=0)
-    questionText = models.ForeignKey(QuestionText, on_delete = models.CASCADE, default="")
+    questionTextObj = models.ForeignKey(QuestionText, on_delete = models.CASCADE, default="")
 
 class Following(models.Model):
     follower = models.ForeignKey(

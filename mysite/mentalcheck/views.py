@@ -12,8 +12,8 @@ from django.core.serializers import json
 class home(View):
     def get(self, request):
         currUser = request.user
-        dateAns = QuestionText.objects.filter(userAnswered = currUser).last().date_answered
-        ans_for_today = QuestionText.objects.filter(date_answered = datetime.today()).count()
+        dateAns = Answer.objects.filter(userAnswered = currUser).last().date_answered
+        ans_for_today = Answer.objects.filter(date_answered = datetime.today()).count()
         qAnswered = False
         if ans_for_today != 0:
             qAnswered = True
@@ -129,11 +129,7 @@ class questions(View):
             # IF so, try to authenticate
             previousQID = request.POST['prevId']
             prevAns = request.POST[previousQID]
-            question = QuestionText.objects.filter(idNum = int(previousQID), userAnswered = request.user).first()
-            question.answer = prevAns
-            question.date_answered = timezone.now()
-            question.save()
-
+            answer = Answer.objects.create(userAnswered = request.user, date_answered = timezone.now(), answer = prevAns, questionTextObj = QuestionText.objects.get(id = previousQID))
         else:
             return HttpResponse("NOOOOOOO")
 
@@ -167,7 +163,7 @@ class newUser(View):
 
 class pastAnswer(View):
     def get(self, request):
-        pastAnswers = QuestionText.objects.filter(userAnswered = request.user)
+        pastAnswers = Answer.objects.filter(userAnswered = request.user)
         context = {
             'allPastQs': pastAnswers
         }
@@ -226,7 +222,7 @@ class following(View):
         allFollowAns = {}
         for f in allFollowObj:
             userName = f.followed.username
-            qAns = QuestionText.objects.filter(userAnswered = f.followed, idNum = QuestionText.objects.all().count()).answer
+            qAns = Answer.objects.filter(userAnswered = f.followed, questionTextObj = QuestionText.objects.filter(idNum = QuestionText.objects.all().count())).answer
             allFollowAns[userName] = qAns
 
         context = {
