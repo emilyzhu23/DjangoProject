@@ -11,10 +11,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
-  <!--Search users, follow button, need other page to see other people-->
+  <!--Following page - Search users, follow button, need other page to see other people-->
   <body>
     {% include 'mentalcheck/header.html' %}
     <script>
+    /*searches through all of the users which is passed as a JSON object*/
       function getInputValue()
       {
         var inputVal = document.getElementById("myInput").value;
@@ -54,7 +55,7 @@
         </div>
       </form>
     </div>
-
+    <!-- Shows the statuses of all of the users they follow back -->
     <div class = "container">
       <h1> Friends: </h1>
       {% for key, value in allFollowAns.items %}

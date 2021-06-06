@@ -11,6 +11,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
+  <!-- The navbar at the top of the pages to help navigate the website -->
   <body>
     <nav id = "Top" class="navbar navbar-expand-sm bg-info navbar-dark">
       <span class="border border-white border-top-0 border-bottom-0 border-left-0">
@@ -36,6 +37,7 @@
           <li class="nav-item">
             <a class="nav-link" href="/mentalcheck/following/">Followers/Following</a>
           </li>
+          <!-- Form to logout -->
           <li class="nav-item">
             <form style="padding-bottom:1em;" method="POST">
               {% csrf_token %}

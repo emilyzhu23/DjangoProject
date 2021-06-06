@@ -11,7 +11,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
-
+  <!-- Home Page -->
   <body>
     {% include 'mentalcheck/header.html' %}
     <br />
@@ -46,12 +46,13 @@
     </div>
     <div class="card">
       {% load static %}
+      <!-- Button that will lead them to the questions page-->
       <img class="card-img-top" src="{% static 'mentalcheck/background2.jpeg' %}" alt="Light Brown Background Image" style="width:100%" />
-      <!--Link to Page-->
       <div class="card-img-overlay d-flex">
         <a class = "btn btn-secondary align-self-center mx-auto" href="/mentalcheck/questions/">Answer Today's Questions</a>
       </div>
     </div>
+    <!-- Button that will send an email to their emergency contact of choice -->
     <div class = "container">
       <form style="padding-bottom:1em;" method="POST" class = "">
         {% csrf_token %}

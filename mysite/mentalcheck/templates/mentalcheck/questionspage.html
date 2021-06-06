@@ -13,6 +13,7 @@
   </head>
 
   <body>
+    <!-- Questions Page - will reload for each question, return answer -->
     <h3>Hello :)</h3>
     <form style="padding-bottom:1em;" method="POST">
       {% csrf_token %}
@@ -26,6 +27,7 @@
         {% endif %}
       </div>
       <br />
+      <!-- If it's the last question -->
       {% if maxId == currQ.idNum %}
         <input type = "hidden" name = "qFinish" value = "" />
       {% endif %}

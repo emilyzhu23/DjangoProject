@@ -15,12 +15,6 @@ from django.core.mail import send_mail
 class home(View):
     def get(self, request):
         currUser = request.user
-        if request.user.is_authenticated:
-            print("NOFUCK")
-        else:
-            print("FUCK")
-        print(currUser.username)
-        print("FUCK")
         context = {
             "currUser": currUser,
         }
@@ -39,7 +33,6 @@ class home(View):
                 [Profile.objects.get(User = request.user).emergencyContact],
                 fail_silently=False,
             )
-            print(sent)
 
         return response
 
@@ -62,7 +55,6 @@ class index(View):
             # if the user is trying to sign in
             if 'newUser' in request.POST.keys():
                 # prompt user to make a new account
-                print("newUSer")
                 response = redirect('/mentalcheck/newuser/')
                 return response
             if 'inputUsername' in request.POST.keys():
@@ -158,12 +150,10 @@ class questions(View):
         maxId = QuestionText.objects.all().count() # last question
 
         if 'prevId' in request.POST.keys(): # move to the next question
-            print('prevId')
             previousQID = request.POST['prevId']
             prevAns = request.POST[previousQID]
             answer = Answer.objects.create(userAnswered = request.user, date_answered = timezone.now(), answer = prevAns, questionTextObj = QuestionText.objects.get(id = previousQID))
         if 'qFinish' in request.POST.keys(): # if they're finished with the quiz
-            print('qFinish')
             response = redirect('/mentalcheck/home/')
             return response
         elif 'logout' in request.POST.keys():
@@ -246,9 +236,7 @@ class following(View):
             userName = f.followed.username
             maxId = QuestionText.objects.all().count()
             questionTextObjAns = QuestionText.objects.get(idNum = maxId)
-            print(questionTextObjAns)
             qAns = Answer.objects.filter(userAnswered = f.followed, questionTextObj = questionTextObjAns).first()
-            print(qAns)
             allFollowAns[userName] = qAns.answer
 
 
