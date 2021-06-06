@@ -11,7 +11,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
-
   <body>
+    <h1> Error </h1>
+    <p> You've already answered your questions for today. Check back in tomorrow :) </p>
+    <form style="padding-bottom:1em;" method="POST">
+      {% csrf_token %}
+      <a class="btn btn-primary" href = "/mentalcheck/home/" role="button">Go Back</a>
+    </form>
   </body>
 </html>

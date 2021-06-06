@@ -13,33 +13,34 @@
   </head>
 
   <body>
+    {% include 'mentalcheck/header.html' %}
     <div class = "container">
-      <h3>Edit Profile</h3>
+      <h3>Edit Profile Here (Remember to click Save): </h3>
       <form style="padding-bottom:1em;" method="POST">
         {% csrf_token %}
         <div class="form-group">
           <label for="inputUsername">Username</label>
-          <input type="text" class="form-control" name="inputUsername" id="inputUsername" placeholder = />
-        </div>
-        <div class="form-group">
-          <label for="inputPassword">Password</label>
-          <input type="password" class="form-control" name="inputPassword" id="inputPassword" placeholder = />
+          <input type="text" class="form-control" name="inputUsername" id="inputUsername" placeholder = "{{currUser.username}}" value = "{{currUser.username}}"/>
         </div>
         <div class="form-group">
           <label for="inputFirstName">First Name</label>
-          <input type="text" class="form-control" name="inputFirstName" id="inputFirstName" placeholder = />
+          <input type="text" class="form-control" name="inputFirstName" id="inputFirstName" placeholder = "{{currUser.first_name}}" value = "{{currUser.first_name}}"/>
         </div>
         <div class="form-group">
           <label for="inputLastName">Last Name</label>
-          <input type="text" class="form-control" name="inputLastName" id="inputLastName" placeholder = />
+          <input type="text" class="form-control" name="inputLastName" id="inputLastName" placeholder = "{{currUser.last_name}}" value = "{{currUser.last_name}}"/>
         </div>
         <div class="form-group">
           <label for="inputAge">Age</label>
-          <input type="text" class="form-control" name="inputAge" id="inputAge" placeholder = />
+          <input type="text" class="form-control" name="inputAge" id="inputAge" placeholder = "{{currProfile.age}}" value = "{{currProfile.age}}"/>
         </div>
         <div class="form-group">
           <label for="inputMed">Medical Record</label>
-          <input type="text" class="form-control" name="inputMed" id="inputMed" placeholder = />
+          <input type="text" class="form-control" name="inputMed" id="inputMed" placeholder = "{{currProfile.medicalHistory}}" value = "{{currProfile.medicalHistory}}"/>
+        </div>
+        <div class="form-group">
+          <label for="inputSelfEmail">Your Own Email</label>
+          <input type="text" class="form-control" name="inputSelfEmail" id="inputSelfEmail" placeholder = "{{currProfile.email}}" value = "{{currProfile.email}}"/>
         </div>
         <button type="submit" class="btn btn-danger">Save</button>
       </form>

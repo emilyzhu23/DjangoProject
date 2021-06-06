@@ -12,7 +12,7 @@ class Profile(models.Model):
     )
     age = models.IntegerField(default = 0)
     medicalHistory = models.TextField(default="", blank=True)
-    emergencyContact = models.CharField(max_length = 10, default = "")
+    emergencyContact = models.TextField(default = "")
 
 class QuestionText(models.Model):
     questionText = models.TextField(default="", blank=True)

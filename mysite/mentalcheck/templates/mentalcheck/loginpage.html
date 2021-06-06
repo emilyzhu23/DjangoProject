@@ -13,34 +13,38 @@
   </head>
 
   <body>
-    <div class = "container">
+    <div class = "container border border-info rounded align-middle d-flex">
       <h1> Welcome To Your Daily Mental Wellness Check-In! </h1>
+    </div>
+    <div class = "container">
+      <br />
+      <br />
       {% if loggedIn %}
         <h3>Hello, {{user.username}}</h3>
         <form style="padding-bottom:1em;" method="POST">
           {% csrf_token %}
-          <input type="hidden" name="logout" value="logout"></input>
-          <button type="submit" class="btn btn-danger">Logout</button>
+          <a class="btn btn-warning float-end" href="/mentalcheck/home/">Continue to Home Page</a>
+          <br />
         </form>
       {% else %}
-      <form style="padding-bottom:1em;" method="POST">
-        {% csrf_token %}
-        <div class="form-group">
-          <label for="inputUsername">Username</label>
-          <input type="text" class="form-control" name="inputUsername" id="inputUsername" />
-        </div>
-        <div class="form-group">
-          <label for="inputPassword">Password</label>
-          <input type="password" class="form-control" name="inputPassword" id="inputPassword" />
-        </div>
-        <button type="submit" class="btn btn-danger">Login</button>
-
+        <p>It seems you're not signed in yet.</p>
+        <form style="padding-bottom:1em;" method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="inputUsername">Username</label>
+            <input type="text" class="form-control" name="inputUsername" id="inputUsername" />
+          </div>
+          <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input type="password" class="form-control" name="inputPassword" id="inputPassword" />
+          </div>
+          <button type="submit" class="btn btn-danger">Login</button>
+        </form>
         <form style="padding-bottom:1em;" method="POST">
           {% csrf_token %}
           <input type="hidden" name="newUser" value="newUser"></input>
           <button type="submit" class="btn btn-danger">New Account?</button>
         </form>
-      </form>
       {% endif %}
     </div>
   </body>

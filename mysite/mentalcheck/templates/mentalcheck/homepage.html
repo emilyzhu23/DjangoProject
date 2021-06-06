@@ -13,18 +13,50 @@
   </head>
 
   <body>
-    <h3>{{user.username}}</h3>
-    <form style="padding-bottom:1em;" method="POST">
-      {% csrf_token %}
-      {{currUser.username}}
-      <button type = "submit" name = "profile"> Go to Profile </button>
-      <button type = "submit" name = "past"> Past Answers </button>
-      <button type = "submit" name = "following"> Following Ppl </button>
-      <button type = "submit" name = "logout"> Logout </button>
-      {% if ifAnsToday %}
-        <button type = "submit" name = "questions"> Answer questions </button>
-      {% endif %}
-    </form>
-
+    {% include 'mentalcheck/header.html' %}
+    <br />
+    <div class = "container">
+      <h4>Welcome, {{user.username}}</h4>
+      <p>It's nice to see you again :) </p>
+    </div>
+    <div class = "card">
+      {% load static %}
+      <img class="card-img-top" src="{% static 'mentalcheck/background.jpeg' %}" alt="Brown Background Image" style="width:100%" />
+      <div class="card-img-overlay d-flex">
+        <p class = "align-self-center mx-auto">Take a moment to relax and breathe. You are valued and worthy. You are more than enough and you are capable of doing anything you put your mind to</p>
+      </div>
+    </div>
+    <div class = "container">
+      <br />
+      <br />
+      <hr />
+      <br />
+      <br />
+    </div>
+    <div class = "card">
+      {% load static %}
+      <img class="card-img-top" src="{% static 'mentalcheck/background3.jpeg' %}" alt="Affirmations Image" style="width:100%" />
+    </div>
+    <div class = "container">
+      <br />
+      <br />
+      <hr />
+      <br />
+      <br />
+    </div>
+    <div class="card">
+      {% load static %}
+      <img class="card-img-top" src="{% static 'mentalcheck/background2.jpeg' %}" alt="Light Brown Background Image" style="width:100%" />
+      <!--Link to Page-->
+      <div class="card-img-overlay d-flex">
+        <a class = "btn btn-secondary align-self-center mx-auto" href="/mentalcheck/questions/">Answer Today's Questions</a>
+      </div>
+    </div>
+    <div class = "container">
+      <form style="padding-bottom:1em;" method="POST" class = "">
+        {% csrf_token %}
+        <button type = "submit" class = "btn btn-danger btn-block" name = "help"> Send Message For Help </button>
+      </form>
+    </div>
   </body>
 </html>

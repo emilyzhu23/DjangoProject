@@ -13,8 +13,8 @@
   </head>
   <!--Search users, follow button, need other page to see other people-->
   <body>
+    {% include 'mentalcheck/header.html' %}
     <script>
-    /* finish this */
       function getInputValue()
       {
         var inputVal = document.getElementById("myInput").value;
@@ -38,14 +38,17 @@
       }
     </script>
 
+    <h1>Your Friends</h1>
     <div class = "container">
-      <h3>results: </h3>
+      <h3>Search For a User: </h3>
       <form style="padding-bottom:1em;" method="POST">
         {% csrf_token %}
         <div class="form-group">
           <input type="text" placeholder="Search..." id = "myInput" name = "userInput"/>
         </div>
         <button type="button" onclick = "getInputValue();" class="btn btn-info">Search</button>
+        <br />
+        <p>Search Results: </p>
         <div id = "search">
           <button type = "submit" name = "followUser"> Follow </button>
         </div>
@@ -53,10 +56,11 @@
     </div>
 
     <div class = "container">
-      <h1> Friends </h1>
-      {% for key, value in allFollowStat %}
-          {{key}}
-          {{value}}
+      <h1> Friends: </h1>
+      {% for key, value in allFollowAns.items %}
+          <h5>{{key}}</h5>
+          <p>on a scale of 1-10, they are feeling: {{value}}</p>
+          <br />
       {% endfor %}
     </div>
   </body>

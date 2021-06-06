@@ -13,18 +13,24 @@
   </head>
 
   <body>
-    <h3>{{user.username}}</h3>
+    <h3>Hello :)</h3>
     <form style="padding-bottom:1em;" method="POST">
       {% csrf_token %}
-      {{currQ.questionText}}
-      <textarea name = "{{ currQ.idNum }}" id = "{{ currQ.idNum }}"></textarea>
+      <div class = "form-group">
+        <label for="questionans">{{currQ.idNum}}. {{currQ.questionText}}</label>
+        <input type="text" class="form-control" id="questionans" name = "{{ currQ.idNum }}" aria-describedby="qAns" placeholder="Enter your answer here">
+        {% if currQ.idNum == maxId %}
+          <small id="qAns" class="form-text text-muted">This answer will be shared with your friends.</small>
+        {% else %}
+          <small id="qAns" class="form-text text-muted">We'll never share this answer with anyone else.</small>
+        {% endif %}
+      </div>
       <br />
       {% if maxId == currQ.idNum %}
         <input type = "hidden" name = "qFinish" value = "" />
-      {% else %}
-        <input type = "hidden" name = "prevId" value = "{{ currQ.idNum }}" />
       {% endif %}
-      <input type="submit" value="submit!"/>
+      <input type = "hidden" name = "prevId" value = "{{ currQ.idNum }}" />
+      <input type="submit" value="Next > "/>
     </form>
 
   </body>
